@@ -1,12 +1,19 @@
-package com.example.navigationlab
+package com.example.navigationlab.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.example.navigationlab.Routes
+import com.example.navigationlab.data.repository.DefaultStudentRepository
+import com.example.navigationlab.data.source.StudentLocalDataSource
+import com.example.navigationlab.ui.detail.DetailViewModel
 import com.example.navigationlab.ui.screen.*
 
 @Composable
 fun NavigationLabApp() {
+    val dataSource = remember { StudentLocalDataSource() }
+    val repository = remember { DefaultStudentRepository(dataSource) }
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -28,15 +35,18 @@ fun NavigationLabApp() {
         composable(
             route = Routes.DETAIL,
             arguments = listOf(
-                navArgument("studentId") {
-                    type = NavType.IntType
-                }
+                navArgument("studentId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            val studentId =
-                backStackEntry.arguments?.getInt("studentId") ?: 0
+            val studentId = backStackEntry.arguments?.getInt("studentId") ?: -1
+            val viewModel: DetailViewModel = viewModel(
+                factory = DetailViewModel.factory(repository)
+            )
+            LaunchedEffect(studentId) {
+                viewModel.loadStudent(studentId)
+            }
             DetailScreen(
-                studentId = studentId,
+                uiState = viewModel.uiState,
                 onBack = { navController.popBackStack() }
             )
         }

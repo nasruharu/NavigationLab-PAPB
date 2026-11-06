@@ -19,8 +19,8 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Home", style = MaterialTheme.typography.headlineMedium)
-        Button(onClick = { onOpenDetail(101) }) {
-            Text("Buka Detail Mahasiswa 101")
+        Button(onClick = { onOpenDetail(2026) }) {
+            Text("Buka Detail Mahasiswa")
         }
         OutlinedButton(onClick = onOpenProfile) {
             Text("Buka Profile")
