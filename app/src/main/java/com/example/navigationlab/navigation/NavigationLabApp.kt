@@ -8,6 +8,7 @@ import com.example.navigationlab.Routes
 import com.example.navigationlab.data.repository.DefaultStudentRepository
 import com.example.navigationlab.data.source.StudentLocalDataSource
 import com.example.navigationlab.ui.detail.DetailViewModel
+import com.example.navigationlab.ui.home.HomeViewModel
 import com.example.navigationlab.ui.screen.*
 
 @Composable
@@ -20,7 +21,12 @@ fun NavigationLabApp() {
         startDestination = Routes.HOME
     ) {
         composable(Routes.HOME) {
+            val viewModel: HomeViewModel = viewModel(
+                factory = HomeViewModel.factory(repository)
+            )
+            LaunchedEffect(Unit) { viewModel.loadStudents() }
             HomeScreen(
+                uiState = viewModel.uiState,
                 onOpenDetail = { id ->
                     navController.navigate(Routes.detail(id))
                 },
