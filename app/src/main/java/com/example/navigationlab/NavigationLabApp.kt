@@ -1,7 +1,6 @@
 package com.example.navigationlab
 
 import androidx.compose.runtime.Composable
-
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.navigationlab.ui.screen.*
@@ -20,6 +19,9 @@ fun NavigationLabApp() {
                 },
                 onOpenProfile = {
                     navController.navigate(Routes.PROFILE)
+                },
+                onOpenAbout = {
+                    navController.navigate(Routes.ABOUT)
                 }
             )
         }
@@ -40,6 +42,11 @@ fun NavigationLabApp() {
         }
         composable(Routes.PROFILE) {
             ProfileScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.ABOUT) {
+            AboutScreen(
                 onBack = { navController.popBackStack() }
             )
         }

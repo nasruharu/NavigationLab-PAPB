@@ -9,7 +9,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeScreen(
     onOpenDetail: (Int) -> Unit,
-    onOpenProfile: () -> Unit
+    onOpenProfile: () -> Unit,
+    onOpenAbout: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -23,6 +24,9 @@ fun HomeScreen(
         }
         OutlinedButton(onClick = onOpenProfile) {
             Text("Buka Profile")
+        }
+        Button(onClick = onOpenAbout) {
+            Text("Buka About")
         }
     }
 }
