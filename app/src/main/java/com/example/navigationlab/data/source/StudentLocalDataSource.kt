@@ -4,11 +4,11 @@ import com.example.navigationlab.data.model.Student
 
 class StudentLocalDataSource {
     private val students = listOf(
-        Student(2026, "Alya Putri", "Teknik Informatika", 2026),
-        Student(2027, "Bima Pratama", "Teknik Informatika", 2026),
-        Student(2028, "Citra Lestari", "Teknik Informatika", 2026),
-        Student(2029, "Dinda Hapsari","Sistem Informasi", 2025),
-        Student(2030, "Edwin Hartanto", "Sistem Informasi", 2024)
+        Student(2026, "Alya Putri", "Teknik Informatika", "Universitas Brawijaya"),
+        Student(2027, "Bima Pratama", "Teknik Informatika", "Universitas Brawijaya"),
+        Student(2028, "Citra Lestari", "Teknik Informatika", "Universitas Brawijaya"),
+        Student(2029, "Dinda Hapsari","Sistem Informasi", "Universitas Brawijaya"),
+        Student(2030, "Edwin Hartanto", "Sistem Informasi", "Universitas Brawijaya")
     )
 
     fun getStudentById(id: Int): Student? =

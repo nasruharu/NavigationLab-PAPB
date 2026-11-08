@@ -25,10 +25,9 @@ fun DetailScreen(
                 Text(uiState.errorMessage)
             uiState.student != null -> {
                 val student = uiState.student
-                Text("ID: ${student.id}")
-                Text("Nama: ${student.name}")
-                Text("Program: ${student.program}")
-                Text("Angkatan: ${student.year}")
+                Text(student.name, style = MaterialTheme.typography.headlineSmall)
+                Text("Email: ${student.email}")
+                Text("University: ${student.university}")
             }
         }
 

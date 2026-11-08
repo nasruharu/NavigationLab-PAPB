@@ -1,47 +1,42 @@
 package com.example.navigationlab.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import com.example.navigationlab.ui.home.HomeUiState
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onOpenDetail: (Int) -> Unit,
-    onOpenProfile: () -> Unit,
-    onOpenAbout: () -> Unit
+    onStudentClick: (Int) -> Unit,
+    onRetry: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text("Home", style = MaterialTheme.typography.headlineMedium)
-        Text("Daftar Mahasiswa")
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            uiState.students.forEach { student ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onOpenDetail(student.id) }
-                ) {
-                    Text(
-                        "${student.id}\n${student.name}",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+    when {
+        uiState.isLoading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
         }
-        OutlinedButton(onClick = onOpenProfile) {
-            Text("Buka Profile")
+        uiState.errorMessage != null -> {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(24.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(uiState.errorMessage)
+                Button(onClick = onRetry) { Text("Coba Lagi") }
+            }
         }
-        OutlinedButton(onClick = onOpenAbout) {
-            Text("Buka About")
+        else -> {
+            LazyColumn {
+                items(uiState.students) { student ->
+                    TextButton(onClick = { onStudentClick(student.id) }) {
+                        Text("${student.id} - ${student.name}")
+                    }
+                }
+            }
         }
     }
 }
