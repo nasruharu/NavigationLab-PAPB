@@ -22,11 +22,15 @@ fun NavigationLabApp() {
         startDestination = Routes.HOME
     ) {
         composable(Routes.HOME) {
-            val homeViewModel = remember { HomeViewModel(repository) }
+            val homeViewModel: HomeViewModel = viewModel(
+                factory = HomeViewModel.factory(repository)
+            )
             HomeScreen(
                 uiState = homeViewModel.uiState,
                 onStudentClick = { id -> navController.navigate(Routes.detail(id)) },
-                onRetry = homeViewModel::loadStudents
+                onRetry = homeViewModel::retry,
+                onSearchQueryChange = homeViewModel::onSearchQueryChange,
+                onSearch = homeViewModel::searchStudents
             )
         }
         composable(

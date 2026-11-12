@@ -12,6 +12,9 @@ interface StudentApiService {
     fun getUsers(
         @Query("limit") limit: Int = 10
     ): Call<UserResponse>
+    @GET("users/search")
+    fun searchUsers(@Query("q") query: String): Call<UserResponse>
+
     @GET("users/{id}")
     fun getUser(
         @Path("id") id: Int

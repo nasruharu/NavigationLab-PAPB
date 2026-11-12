@@ -12,28 +12,46 @@ import com.example.navigationlab.ui.home.HomeUiState
 fun HomeScreen(
     uiState: HomeUiState,
     onStudentClick: (Int) -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onSearch: () -> Unit
 ) {
-    when {
-        uiState.isLoading -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+    Column(
+        modifier = Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("Pencarian Profil", style = MaterialTheme.typography.headlineMedium)
+        OutlinedTextField(
+            value = uiState.searchQuery,
+            onValueChange = onSearchQueryChange,
+            label = { Text("Kata pencarian") },
+            placeholder = { Text("Contoh: John") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(onClick = onSearch, enabled = !uiState.isLoading) {
+            Text("Cari")
         }
-        uiState.errorMessage != null -> {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(24.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
+        when {
+            uiState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            uiState.errorMessage != null -> {
                 Text(uiState.errorMessage)
                 Button(onClick = onRetry) { Text("Coba Lagi") }
             }
-        }
-        else -> {
-            LazyColumn {
-                items(uiState.students) { student ->
-                    TextButton(onClick = { onStudentClick(student.id) }) {
-                        Text("${student.id} - ${student.name}")
+            uiState.students.isEmpty() -> Text("Profil tidak ditemukan")
+            else -> {
+                LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                    items(uiState.students, key = { it.id }) { student ->
+                        TextButton(onClick = { onStudentClick(student.id) }) {
+                            Text("${student.id} - ${student.name}")
+                        }
                     }
                 }
             }

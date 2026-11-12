@@ -10,7 +10,18 @@ class StudentRemoteDataSource (
     private val api: StudentApiService
 ) {
     fun getStudents(callback: (Result<List<UserDto>>) -> Unit) {
-        api.getUsers().enqueue(object : Callback<UserResponse> {
+        enqueueUsers(api.getUsers(), callback)
+    }
+
+    fun searchStudents(query: String, callback: (Result<List<UserDto>>) -> Unit) {
+        enqueueUsers(api.searchUsers(query), callback)
+    }
+
+    private fun enqueueUsers(
+        request: Call<UserResponse>,
+        callback: (Result<List<UserDto>>) -> Unit
+    ) {
+        request.enqueue(object : Callback<UserResponse> {
             override fun onResponse(
                 call: Call<UserResponse>,
                 response: Response<UserResponse>
