@@ -15,7 +15,8 @@ fun DetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .safeDrawingPadding(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Detail", style = MaterialTheme.typography.headlineMedium)
