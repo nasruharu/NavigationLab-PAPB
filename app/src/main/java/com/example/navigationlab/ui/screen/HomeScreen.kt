@@ -7,14 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.navigationlab.data.model.Student
 import com.example.navigationlab.ui.home.HomeUiState
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onSearch: () -> Unit,
     onStudentClick: (Int) -> Unit,
     onRetry: () -> Unit
 ) {
@@ -27,15 +26,12 @@ fun HomeScreen(
     ) {
         Text("Profil App", style = MaterialTheme.typography.headlineMedium)
         OutlinedTextField(
-            value = uiState.searchQuery,
+            value = searchQuery,
             onValueChange = onSearchQueryChange,
             label = { Text("Cari Profil") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        Button(onClick = onSearch, enabled = !uiState.isLoading) {
-            Text("Cari")
-        }
         Spacer(modifier = Modifier.height(12.dp))
         Text("Daftar Profil", style = MaterialTheme.typography.headlineSmall)
         when {

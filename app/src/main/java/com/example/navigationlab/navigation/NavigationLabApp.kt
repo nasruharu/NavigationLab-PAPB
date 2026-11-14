@@ -1,6 +1,7 @@
 package com.example.navigationlab.navigation
 
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
@@ -14,9 +15,14 @@ import com.example.navigationlab.ui.screen.*
 
 @Composable
 fun NavigationLabApp() {
-    val remoteDataSource = remember { StudentRemoteDataSource(RetrofitClient.apiService) }
-    val repository = remember { DefaultStudentRepository(remoteDataSource) }
+    val remoteDataSource = remember {
+        StudentRemoteDataSource(RetrofitClient.apiService)
+    }
+    val repository = remember {
+        DefaultStudentRepository(remoteDataSource)
+    }
     val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = Routes.HOME
@@ -25,29 +31,37 @@ fun NavigationLabApp() {
             val homeViewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.factory(repository)
             )
+            val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+            val searchQuery by homeViewModel.searchQuery.collectAsStateWithLifecycle()
             HomeScreen(
-                uiState = homeViewModel.uiState,
+                uiState = homeUiState,
+                searchQuery = searchQuery,
                 onSearchQueryChange = homeViewModel::onSearchQueryChange,
-                onSearch = homeViewModel::searchStudents,
-                onStudentClick = { id -> navController.navigate(Routes.detail(id)) },
+                onStudentClick = { id ->
+                    navController.navigate(Routes.detail(id))
+                },
                 onRetry = homeViewModel::retry
             )
         }
+
         composable(
             route = Routes.DETAIL,
             arguments = listOf(
-                navArgument("studentId") { type = NavType.IntType }
+                navArgument("studentId") {
+                    type = NavType.IntType
+                }
             )
         ) { backStackEntry ->
             val studentId = backStackEntry.arguments?.getInt("studentId") ?: -1
-            val viewModel: DetailViewModel = viewModel(
+            val detailViewModel: DetailViewModel = viewModel(
                 factory = DetailViewModel.factory(repository)
             )
+            val detailUiState by detailViewModel.uiState.collectAsStateWithLifecycle()
             LaunchedEffect(studentId) {
-                viewModel.loadStudent(studentId)
+                detailViewModel.loadStudent(studentId)
             }
             DetailScreen(
-                uiState = viewModel.uiState,
+                uiState = detailUiState,
                 onBack = { navController.popBackStack() }
             )
         }
