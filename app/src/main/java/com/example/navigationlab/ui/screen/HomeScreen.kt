@@ -15,7 +15,8 @@ fun HomeScreen(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onStudentClick: (Int) -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onRefresh: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -33,7 +34,16 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Text("Daftar Profil", style = MaterialTheme.typography.headlineSmall)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Daftar Profil", style = MaterialTheme.typography.headlineSmall)
+            if (uiState.errorMessage == null) {
+                Button(onClick = onRefresh, enabled = !uiState.isLoading) { Text("Refresh") }
+            }
+        }
         when {
             uiState.isLoading -> {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {

@@ -37,10 +37,9 @@ fun NavigationLabApp() {
                 uiState = homeUiState,
                 searchQuery = searchQuery,
                 onSearchQueryChange = homeViewModel::onSearchQueryChange,
-                onStudentClick = { id ->
-                    navController.navigate(Routes.detail(id))
-                },
-                onRetry = homeViewModel::retry
+                onStudentClick = { id -> navController.navigate(Routes.detail(id)) },
+                onRetry = homeViewModel::retry,
+                onRefresh = homeViewModel::refresh
             )
         }
 
