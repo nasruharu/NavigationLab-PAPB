@@ -1,6 +1,7 @@
 package com.example.navigationlab.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
@@ -10,6 +11,7 @@ import com.example.navigationlab.ui.detail.DetailUiState
 @Composable
 fun DetailScreen(
     uiState: DetailUiState,
+    onToggleFavorite: () -> Unit,
     onBack: () -> Unit
 ) {
     Column(
@@ -30,6 +32,15 @@ fun DetailScreen(
                 Text("Email: ${student.email}")
                 Text("University: ${student.university}")
             }
+        }
+
+        Button(onClick = onToggleFavorite) {
+            Text(
+                if (uiState.isFavorite)
+                    "Hapus dari Favorit"
+                else
+                    "Simpan ke Favorit"
+            )
         }
 
         Button(onClick = onBack) { Text("Kembali") }

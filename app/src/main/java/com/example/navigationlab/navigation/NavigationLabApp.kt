@@ -12,6 +12,10 @@ import com.example.navigationlab.data.repository.DefaultStudentRepository
 import com.example.navigationlab.ui.detail.DetailViewModel
 import com.example.navigationlab.ui.home.HomeViewModel
 import com.example.navigationlab.ui.screen.*
+import androidx.compose.ui.platform.LocalContext
+import com.example.navigationlab.data.preferences.UserPreferencesRepository
+import com.example.navigationlab.data.local.DatabaseProvider
+import com.example.navigationlab.data.repository.FavoriteRepository
 
 @Composable
 fun NavigationLabApp() {
@@ -21,6 +25,16 @@ fun NavigationLabApp() {
     val repository = remember {
         DefaultStudentRepository(remoteDataSource)
     }
+    val context = LocalContext.current
+    val preferencesRepository = remember {
+        UserPreferencesRepository(context.applicationContext)
+    }
+    val favoriteRepository = remember {
+        FavoriteRepository(
+            DatabaseProvider.getDatabase(context)
+                .favoriteStudentDao()
+        )
+    }
     val navController = rememberNavController()
 
     NavHost(
@@ -29,7 +43,7 @@ fun NavigationLabApp() {
     ) {
         composable(Routes.HOME) {
             val homeViewModel: HomeViewModel = viewModel(
-                factory = HomeViewModel.factory(repository)
+                factory = HomeViewModel.factory(repository, preferencesRepository)
             )
             val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
             val searchQuery by homeViewModel.searchQuery.collectAsStateWithLifecycle()
@@ -53,7 +67,7 @@ fun NavigationLabApp() {
         ) { backStackEntry ->
             val studentId = backStackEntry.arguments?.getInt("studentId") ?: -1
             val detailViewModel: DetailViewModel = viewModel(
-                factory = DetailViewModel.factory(repository)
+                factory = DetailViewModel.factory(repository, favoriteRepository)
             )
             val detailUiState by detailViewModel.uiState.collectAsStateWithLifecycle()
             LaunchedEffect(studentId) {
@@ -61,6 +75,7 @@ fun NavigationLabApp() {
             }
             DetailScreen(
                 uiState = detailUiState,
+                onToggleFavorite = detailViewModel::toggleFavorite,
                 onBack = { navController.popBackStack() }
             )
         }

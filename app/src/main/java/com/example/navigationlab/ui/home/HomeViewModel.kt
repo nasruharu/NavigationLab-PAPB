@@ -8,9 +8,12 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import com.example.navigationlab.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 
 class HomeViewModel(
-    private val repository: StudentRepository
+    private val repository: StudentRepository,
+    private val preferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -22,6 +25,23 @@ class HomeViewModel(
     }
 
     init { loadStudents() }
+
+    init { observeSearch() }
+
+    init {
+        viewModelScope.launch {
+            _searchQuery.value = preferencesRepository.lastSearchQuery.first()
+        }
+        viewModelScope.launch {
+            searchQuery
+                .debounce(500)
+                .distinctUntilChanged()
+                .collectLatest { value ->
+                    preferencesRepository.saveLastSearchQuery(value)
+                }
+        }
+    }
+
     fun loadStudents() {
         viewModelScope.launch {
             _uiState.value = HomeUiState(isLoading = true)
@@ -65,10 +85,6 @@ class HomeViewModel(
                     }
                 }
         }
-    }
-
-    init {
-        observeSearch()
     }
 
     fun retry() {
@@ -117,11 +133,14 @@ class HomeViewModel(
     }
 
     companion object {
-        fun factory(repository: StudentRepository): ViewModelProvider.Factory =
+        fun factory(
+            repository: StudentRepository,
+            preferencesRepository: UserPreferencesRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return HomeViewModel(repository) as T
+                    return HomeViewModel(repository, preferencesRepository) as T
                 }
             }
     }
