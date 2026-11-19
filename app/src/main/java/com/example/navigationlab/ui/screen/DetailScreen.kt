@@ -34,14 +34,10 @@ fun DetailScreen(
             }
         }
 
-        Button(onClick = onToggleFavorite) {
-            Text(
-                if (uiState.isFavorite)
-                    "Hapus dari Favorit"
-                else
-                    "Simpan ke Favorit"
-            )
-        }
+        if (uiState.isFavorite)
+            OutlinedButton(onClick = onToggleFavorite) { Text("Hapus dari Favorit") }
+        else
+            Button(onClick = onToggleFavorite) { Text("Simpan ke Favorit") }
 
         Button(onClick = onBack) { Text("Kembali") }
     }
