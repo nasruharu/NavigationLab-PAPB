@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 
 class LocationViewModel(
     private val repository: LocationRepository
-
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<LocationUiState>(LocationUiState.Idle)
     val uiState: StateFlow<LocationUiState> = _uiState.asStateFlow()
@@ -22,5 +21,7 @@ class LocationViewModel(
                 )
         }
     }
-
+    fun onPermissionDenied() {
+        _uiState.value = LocationUiState.PermissionDenied
+    }
 }

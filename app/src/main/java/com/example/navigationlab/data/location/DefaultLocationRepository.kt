@@ -30,7 +30,8 @@ class DefaultLocationRepository(
         DeviceLocation(
             latitude = location.latitude,
             longitude = location.longitude,
-            accuracy = location.accuracy
+            accuracy = location.accuracy,
+            updatedAt = System.currentTimeMillis()
         )
     }
 }

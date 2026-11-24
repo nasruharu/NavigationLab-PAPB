@@ -7,4 +7,5 @@ sealed interface LocationUiState {
     data object Loading : LocationUiState
     data class Success(val location: DeviceLocation) : LocationUiState
     data class Error(val message: String) : LocationUiState
+    data object PermissionDenied : LocationUiState
 }

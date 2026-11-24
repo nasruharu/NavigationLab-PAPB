@@ -33,8 +33,8 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedButton(onClick = onOpenFavorites) { Text("Lihat Daftar Favorit") }
             Button(onClick = onOpenLocation) { Text("Buka Lokasi") }
+            OutlinedButton(onClick = onOpenFavorites) { Text("Lihat Daftar Favorit") }
         }
         OutlinedTextField(
             value = searchQuery,
