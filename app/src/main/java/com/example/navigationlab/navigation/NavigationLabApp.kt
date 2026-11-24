@@ -13,10 +13,16 @@ import com.example.navigationlab.ui.detail.DetailViewModel
 import com.example.navigationlab.ui.home.HomeViewModel
 import com.example.navigationlab.ui.screen.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.navigationlab.data.preferences.UserPreferencesRepository
 import com.example.navigationlab.data.local.DatabaseProvider
 import com.example.navigationlab.data.repository.FavoriteRepository
 import com.example.navigationlab.ui.favorites.FavoritesViewModel
+import com.google.android.gms.location.LocationServices
+import com.example.navigationlab.data.location.DefaultLocationRepository
+import com.example.navigationlab.ui.location.LocationScreen
+import com.example.navigationlab.ui.location.LocationViewModel
 
 @Composable
 fun NavigationLabApp() {
@@ -37,6 +43,22 @@ fun NavigationLabApp() {
         )
     }
     val navController = rememberNavController()
+    val applicationContext = LocalContext.current.applicationContext
+    val locationClient = remember(applicationContext) {
+        LocationServices.getFusedLocationProviderClient(applicationContext)
+    }
+    val locationRepository = remember(locationClient) {
+        DefaultLocationRepository(
+            context = applicationContext, client = locationClient
+        )
+    }
+    val locationViewModelFactory = remember(locationRepository) {
+        viewModelFactory {
+            initializer {
+                LocationViewModel(locationRepository)
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -55,7 +77,8 @@ fun NavigationLabApp() {
                 onStudentClick = { id -> navController.navigate(Routes.detail(id)) },
                 onRetry = homeViewModel::retry,
                 onRefresh = homeViewModel::refresh,
-                onOpenFavorites = { navController.navigate(Routes.FAVORITES) }
+                onOpenFavorites = { navController.navigate(Routes.FAVORITES) },
+                onOpenLocation = { navController.navigate(Routes.LOCATION) }
             )
         }
         composable(Routes.FAVORITES) {
@@ -102,6 +125,15 @@ fun NavigationLabApp() {
         }
         composable(Routes.ABOUT) {
             AboutScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.LOCATION) {
+            val locationViewModel: LocationViewModel = viewModel(
+                factory = locationViewModelFactory
+            )
+            LocationScreen(
+                viewModel = locationViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

@@ -2,6 +2,7 @@ package com.example.navigationlab
 
 object Routes {
     const val HOME = "home"
+    const val LOCATION = "location"
     const val PROFILE = "profile"
     const val DETAIL = "detail/{studentId}"
     const val ABOUT = "about"

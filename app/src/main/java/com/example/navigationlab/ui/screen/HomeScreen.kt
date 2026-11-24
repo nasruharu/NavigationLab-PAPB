@@ -17,7 +17,8 @@ fun HomeScreen(
     onStudentClick: (Int) -> Unit,
     onRetry: () -> Unit,
     onRefresh: () -> Unit,
-    onOpenFavorites: () -> Unit
+    onOpenFavorites: () -> Unit,
+    onOpenLocation: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -27,7 +28,14 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Profil App", style = MaterialTheme.typography.headlineMedium)
-        OutlinedButton(onClick = onOpenFavorites) { Text("Lihat Daftar Favorit") }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedButton(onClick = onOpenFavorites) { Text("Lihat Daftar Favorit") }
+            Button(onClick = onOpenLocation) { Text("Buka Lokasi") }
+        }
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
